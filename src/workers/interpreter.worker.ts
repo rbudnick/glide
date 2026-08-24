@@ -76,7 +76,7 @@ const preparePyodide = async () => {
   newPyodide.setStdout({ batched: post.writeln });
   newPyodide.setStderr({ batched: post.error });
   await newPyodide.loadPackage(['micropip']);
-  pyodide.runPython(`
+  newPyodide.runPython(`
 import micropip, pyodide
 _orig_install = micropip.install
 
