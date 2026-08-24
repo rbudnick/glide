@@ -73,6 +73,7 @@ const preparePyodide = async () => {
   const newPyodide = await loadPyodide();
   newPyodide.setStdout({ batched: post.writeln });
   newPyodide.setStderr({ batched: post.error });
+  await newPyodide.loadPackage(['numpy']);
   pyodide = newPyodide;
 
   if (interruptBuffer) pyodide.setInterruptBuffer(interruptBuffer);
