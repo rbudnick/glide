@@ -70,7 +70,9 @@ const setUpREPLEnvironment = () => {
 };
 
 const preparePyodide = async () => {
-  const newPyodide = await loadPyodide();
+  const newPyodide = await loadPyodide({
+    indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.22.1/full/',
+  });
   newPyodide.setStdout({ batched: post.writeln });
   newPyodide.setStderr({ batched: post.error });
   await newPyodide.loadPackage(['numpy']);
