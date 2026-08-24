@@ -54,7 +54,6 @@ const Navigator = (): JSX.Element => {
           <Item
             className="text-slate-400"
             onClick={() => {
-              console.log('1. Navigator: Download button clicked');
               window.dispatchEvent(new CustomEvent('download-file'));
             }}
           >
