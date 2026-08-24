@@ -76,6 +76,19 @@ const preparePyodide = async () => {
   newPyodide.setStdout({ batched: post.writeln });
   newPyodide.setStderr({ batched: post.error });
   await newPyodide.loadPackage(['micropip']);
+
+  // Inside worker initialization logic
+  await pyodide.loadPackage('nltk');
+  
+  // Fetch and unpack tokenizer data directly into MEMFS
+  const res = await fetch(
+    'https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/tokenizers/punkt_tab.zip'
+  );
+  const buffer = new Uint8Array(await res.arrayBuffer());
+  
+  pyodide.FS.mkdirTree('/nltk_data/tokenizers');
+  pyodide.unpackArchive(buffer, 'zip', { extractDir: '/nltk_data/tokenizers' });
+  
   pyodide = newPyodide;
 
   if (interruptBuffer) pyodide.setInterruptBuffer(interruptBuffer);
