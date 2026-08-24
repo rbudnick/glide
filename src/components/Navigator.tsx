@@ -53,6 +53,15 @@ const Navigator = (): JSX.Element => {
 
           <Item
             className="text-slate-400"
+            onClick={() => {
+              window.dispatchEvent(new CustomEvent('download-file'));
+            }}
+          >
+            Download
+          </Item>
+
+          <Item
+            className="text-slate-400"
             icon={BuildingLibraryIcon}
             onClick={() => setOpenLibrary(true)}
           >
