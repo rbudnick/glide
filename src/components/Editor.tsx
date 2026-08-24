@@ -15,6 +15,7 @@ interface EditorProps {
 }
 
 interface CoreEditorProps extends EditorProps {
+  fileName?: string;
   onSave: (content: string) => void;
   onChange: (value: string) => void;
   value: string;
@@ -43,6 +44,28 @@ const CoreEditor = (props: CoreEditorProps): JSX.Element => {
     window.addEventListener('keydown', handleShortcut);
     return () => window.removeEventListener('keydown', handleShortcut);
   }, [handleShortcut]);
+
+  useEffect(() => {
+    const handleDownload = () => {
+      const content = ref.current?.getValue() ?? props.value;
+      const downloadName = props.fileName || 'script.py';
+
+      const blob = new Blob([content], { type: 'text/x-python;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = downloadName;
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    };
+
+    window.addEventListener('download-file', handleDownload);
+    return () => window.removeEventListener('download-file', handleDownload);
+  }, [props.value, props.fileName]);
 
   const saveThenRunCode = () => {
     const content = ref.current?.getValue() ?? '';
@@ -94,6 +117,7 @@ const Editor = (props: EditorProps): JSX.Element | null => {
   return (
     <CoreEditor
       {...props}
+      fileName={name}
       onChange={update}
       onSave={(newContent) => save(name, newContent)}
       value={content}
