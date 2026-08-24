@@ -46,21 +46,39 @@ const CoreEditor = (props: CoreEditorProps): JSX.Element => {
   }, [handleShortcut]);
 
   useEffect(() => {
-    const handleDownload = () => {
-      console.log('2. Editor: Download event received');
+    const handleDownload = async () => {
       const content = ref.current?.getValue() ?? props.value;
       const downloadName = props.fileName || 'script.py';
-      console.log('3. Triggering download for:', downloadName);
 
+      if ('showSaveFilePicker' in window) {
+        try {
+          const handle = await (window as any).showSaveFilePicker({
+            suggestedName: downloadName,
+            types: [
+              {
+                description: 'Python Script',
+                accept: { 'text/x-python': ['.py'] },
+              },
+            ],
+          });
+          const writable = await handle.createWritable();
+          await writable.write(content);
+          await writable.close();
+          return;
+        } catch (err: any) {
+          if (err.name === 'AbortError') return;
+        }
+      }
+  
       const blob = new Blob([content], { type: 'text/x-python;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
-
+  
       const link = document.createElement('a');
       link.href = url;
       link.download = downloadName;
       document.body.appendChild(link);
       link.click();
-
+  
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
     };
