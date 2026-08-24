@@ -81,7 +81,7 @@ import micropip, pyodide
 _orig_install = micropip.install
 
 def _sync_install(*args, **kwargs):
-    return pyodide.webloop.webloop.run_until_complete(_orig_install(*args, **kwargs))
+    return pyodide.webloop.WebLoop.run_until_complete(_orig_install(*args, **kwargs))
 
 micropip.install = _sync_install
 `);
