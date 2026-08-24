@@ -47,8 +47,10 @@ const CoreEditor = (props: CoreEditorProps): JSX.Element => {
 
   useEffect(() => {
     const handleDownload = () => {
+      console.log('2. Editor: Download event received');
       const content = ref.current?.getValue() ?? props.value;
       const downloadName = props.fileName || 'script.py';
+      console.log('3. Triggering download for:', downloadName);
 
       const blob = new Blob([content], { type: 'text/x-python;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
