@@ -89,6 +89,19 @@ const Terminal = (props: TerminalProps): JSX.Element => {
       disableStdin: true,
     });
 
+    // Handle Ctrl+C / Cmd+C keyboard shortcut for copying terminal selection
+    xterm.attachCustomKeyEventHandler((event: KeyboardEvent) => {
+      const isMac = navigator.platform.startsWith('Mac');
+      const isCopyCombo = (isMac ? event.metaKey : event.ctrlKey) && event.key.toLowerCase() === 'c';
+
+      if (isCopyCombo && event.type === 'keydown' && xterm.hasSelection()) {
+        navigator.clipboard.writeText(xterm.getSelection());
+        return false; // Intercept key event so Xterm does not treat it as a terminal signal
+      }
+
+      return true;
+    });
+
     const fitAddon = new FitAddon();
     xterm.loadAddon(fitAddon);
 
