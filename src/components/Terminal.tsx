@@ -96,9 +96,11 @@ const Terminal = (props: TerminalProps): JSX.Element => {
 
       if (isCopyCombo && event.type === 'keydown' && xterm.hasSelection()) {
         navigator.clipboard.writeText(xterm.getSelection());
+        console.log('selected and ctrl');
         return false; // Intercept key event so Xterm does not treat it as a terminal signal
       }
 
+      console.log('no selected and ctrl');
       return true;
     });
 
