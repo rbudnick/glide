@@ -22,6 +22,7 @@ interface Message<T extends Record<string, unknown>> {
 interface RunExportableData {
   code: string;
   exports?: { name: string; content: string }[];
+  filename?: string;
 }
 
 let pyodide: PyodideInterface;
