@@ -158,11 +158,10 @@ const listeners = {
 
       const safeFilename = filename || "main.py";
       const fullPath = `/home/pyodide/${safeFilename}`;
-      
-      // 3. Inject __file__ into Pyodide!
-      pyodide.globals.set("__file__", fullPath);
 
       const globals = pyodide.globals.get('dict')();
+
+      globals.set("__file__", fullPath);
 
       /**
        * `await pyodide.runPythonAsync(code)` is not used because it raises
