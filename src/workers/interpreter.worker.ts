@@ -145,7 +145,7 @@ const listeners = {
     interruptBuffer = newInterruptBuffer;
   },
 
-  run: async ({ code, exports }: RunExportableData) => {
+  run: async ({ code, exports, filename }: RunExportableData) => {
     pyodide ??= await preparePyodide();
 
     post.writeln(RUN_CODE);
@@ -154,6 +154,12 @@ const listeners = {
       post.lock();
       prepareExports(exports);
       await pyodide.loadPackagesFromImports(code);
+
+      const safeFilename = filename || "main.py";
+      const fullPath = `/home/pyodide/${safeFilename}`;
+      
+      // 3. Inject __file__ into Pyodide!
+      pyodide.globals.set("__file__", fullPath);
 
       const globals = pyodide.globals.get('dict')();
 
