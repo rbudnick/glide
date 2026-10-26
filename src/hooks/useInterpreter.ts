@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
+import { getSelectedFileName } from '../store/filesSlice';
 
 interface Interpreter {
   run: (code: string) => void;
@@ -25,6 +27,7 @@ interface Message<L extends Record<string, any>> {
 const useInterpreter = (callbacks: Callbacks): Interpreter => {
   const workerRef = useRef<Worker>(null);
   const interruptBufferRef = useRef<Uint8Array>(null);
+  const activeFileName = useSelector(getSelectedFileName);
 
   const setUpInterpreterWorker = () => {
     const worker = new Worker(
@@ -68,7 +71,7 @@ const useInterpreter = (callbacks: Callbacks): Interpreter => {
       resetInterruptBuffer();
       workerRef.current?.postMessage({
         type: 'run',
-        payload: { code, exports: callbacks.exports?.() },
+        payload: { code, exports: callbacks.exports?.(), filename: activeFileName },
       });
     },
     stop: () => {
